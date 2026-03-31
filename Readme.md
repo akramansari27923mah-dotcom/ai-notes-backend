@@ -8,10 +8,10 @@ A powerful backend service for the AI Notes Generator application. It handles PD
 
 This backend provides REST APIs to:
 
-* Upload and parse PDF files 📄
-* Process text input ✍️
-* Generate AI-powered notes 🧠
-* Store and manage data using MongoDB 🗄️
+* Upload and parse PDF files 
+* Process text input 
+* Generate AI-powered notes 
+* Store and manage data using MongoDB 
 
 ---
 
