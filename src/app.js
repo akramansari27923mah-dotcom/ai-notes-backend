@@ -18,4 +18,8 @@ app.use(cookieParser())
 app.use('/api/auth', authRouter)
 app.use('/api/ai', aiRouter)
 
+app.get('/', (_, res) => {
+    res.send('Api is working')
+})
+
 export default app
