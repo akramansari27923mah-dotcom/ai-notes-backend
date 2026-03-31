@@ -10,7 +10,7 @@ const app = express();
 app.use(cors({
     origin: [
         'http://localhost:5173',
-        'https://ai-notes-frontend-x9sz.vercel.app/'
+        'https://ai-notes-frontend-x9sz.vercel.app'
     ],
     credentials: true
 }))
