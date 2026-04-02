@@ -1,14 +1,13 @@
 import * as pdfParsePkg from 'pdf-parse';
 const pdfParse = pdfParsePkg;
 import pdfModel from "../models/pdf.model.js";
-import { handleGroq } from "../utils/ai.js";
+import { handelQuiz, handleGroq } from "../utils/ai.js";
 
 const generateNotes = async (req, res) => {
 
     const { prompt } = req.body;
     const id = req.userId;
     const { title } = req.body;
-    console.log("title", title);
 
     try {
         // check file
@@ -35,12 +34,17 @@ const generateNotes = async (req, res) => {
         // get notes from AI
         const notesByAi = await handleGroq(text, prompt, title);
 
+        const checkNotes = text ? text : prompt
+
+        const quiz = await handelQuiz(checkNotes)
+
         // save in DB
         const notesCreated = await pdfModel.create({
             text: text,
             notes: notesByAi,
             userId: id,
-            title: title
+            title: title,
+            quiz: quiz
         });
 
         res.status(201).json({
@@ -48,7 +52,8 @@ const generateNotes = async (req, res) => {
             message: "Notes created successfully",
             data: notesCreated,
             title,
-            id: req.userId
+            id: req.userId,
+            quiz
         });
 
     } catch (err) {
@@ -67,7 +72,6 @@ const getNotes = async (req, res) => {
     try {
 
         const notes = await pdfModel.find({ userId: req?.userId })
-        console.log(notes);
 
         if (!notes) {
             return res.status(400).json({

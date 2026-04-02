@@ -1,6 +1,7 @@
 import express from 'express';
 import authRouter from './Routes/auth.routes.js'
 import aiRouter from './Routes/pdf.routes.js'
+// import quizRouter from './Routes/quiz.routes.js'
 import cors from 'cors';
 import cookieParser from 'cookie-parser'
 
@@ -20,6 +21,7 @@ app.use(cookieParser())
 //prefix
 app.use('/api/auth', authRouter)
 app.use('/api/ai', aiRouter)
+// app.use('/api/quiz', quizRouter)
 
 app.get('/', (_, res) => {
     res.send('Api is working')

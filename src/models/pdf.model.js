@@ -13,6 +13,10 @@ const pdfSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    quiz: {
+        type: String,
+        required: true
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'

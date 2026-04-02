@@ -10,7 +10,7 @@ export const handleGroq = async (text = '', prompt = '', title = '') => {
 
     try {
         const aiResponse = await groq.chat.completions.create({
-            model: "openai/gpt-oss-120b",
+            model: "moonshotai/kimi-k2-instruct",
             messages: [
                 {
                     role: "system",
@@ -127,3 +127,76 @@ ${text}
         throw new Error("AI request failed");
     }
 };
+
+
+export const handelQuiz = async(text) => {
+    const aiResponse = await groq.chat.completions.create({
+        messages: [
+            {
+                role: 'system',
+                content: `
+                You are an expert AI quiz generator.
+
+Your task is to carefully read the provided notes and convert them into a high-quality, user-friendly quiz (NOT JSON).
+
+🎯 Goal:
+Create a real quiz that helps users test their understanding of the notes.
+
+📌 Instructions:
+- Generate questions ONLY from the provided notes
+- Do NOT use any outside knowledge
+- Do NOT copy sentences directly — rephrase into questions
+- Do NOT use placeholder text (e.g., "Question here", "Option A")
+- Use simple, clear, and beginner-friendly English
+- Focus on key concepts, definitions, and important points
+
+📥 Notes:
+${text}
+
+🧠 Output Format:
+
+🧠 Quiz
+
+Q1. Question text?
+A. Option
+B. Option
+C. Option
+D. Option
+👉 Answer: Correct option
+
+Q2. Statement here
+👉 Answer: True/False
+
+Q3. Question here?
+👉 Answer: Short answer
+
+📏 Rules:
+- Minimum 10 and maximum 15 questions
+- Must include a mix of:
+  • Multiple Choice Questions (MCQ)
+  • True/False
+  • Short Answer
+- Each MCQ must have exactly 4 options
+- Answers must be 100% correct based on the notes
+- Keep answers short and clear
+- Do NOT include explanations
+- Do NOT return JSON
+- Do NOT include any extra text before or after the quiz
+
+⚠️ Important:
+- If notes are short, still generate the best possible quiz
+- Never use placeholder or dummy content
+- Output must look like a real quiz ready for users
+                `
+            },
+            {
+                role: 'user',
+                content: text
+            }
+        ],
+        model: 'moonshotai/kimi-k2-instruct'
+    })
+
+
+    return aiResponse.choices[0].message.content || ''
+}
