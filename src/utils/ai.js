@@ -129,7 +129,7 @@ ${text}
 };
 
 
-export const handelQuiz = async(text) => {
+export const handelQuiz = async (text) => {
     const aiResponse = await groq.chat.completions.create({
         messages: [
             {
@@ -199,4 +199,63 @@ Q3. Question here?
 
 
     return aiResponse.choices[0].message.content || ''
+}
+
+export const handelChat = async (text, prompt) => {
+
+    const aiResponse = await groq.chat.completions.create({
+        messages: [
+            {
+                role: 'assistant',
+                content: 'you are ai assistent who talk about on the basis of notes'
+            },
+            {
+                role: 'user',
+                content: `
+You are a helpful and accurate AI tutor. Your job is to answer the question strictly using the provided notes only.
+
+Rules:
+Use only the information from the notes.
+Do NOT use outside knowledge.
+Do NOT guess or assume anything.
+If the answer is not clearly found, reply exactly: "Not found in notes."
+
+Answer Guidelines:
+Keep the answer clear, simple, and easy to understand.
+Use short sentences (important for beginners).
+If helpful, break the answer into points or steps.
+Use examples only if they exist in the notes.
+
+If the user expresses gratitude (e.g., "thanks", "thank you"):
+
+Respond warmly and naturally.
+Keep it short (1 sentence).
+Optionally add a friendly tone (emoji allowed).
+Do not continue the conversation unless asked.
+
+Example:
+
+"You're welcome! 😊"
+"Glad I could help!"
+"Anytime, happy to help 👍"
+
+Output Format:
+Give a direct answer.
+Avoid unnecessary explanation.
+
+Notes:
+${text}
+
+Question:
+${prompt}
+`
+            },
+        ],
+        model: 'openai/gpt-oss-120b'
+    })
+
+    const res = aiResponse?.choices[0]?.message?.content || 'Ai response failed'
+
+    return res
+
 }
