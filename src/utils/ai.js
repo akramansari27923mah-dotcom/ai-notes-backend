@@ -259,3 +259,68 @@ ${prompt}
     return res
 
 }
+
+export const handelChatSupport = async(text, historys, username) => {
+    
+    const history = historys.slice(-20)
+
+    try{
+
+        const aiResponse = await groq.chat.completions.create({
+            messages: [
+                {
+                    role: 'assistant',
+                    content: 'You are a helpfull ai for my plateform'
+                },
+                ...history,
+                {
+                    role: 'system',
+                    content: `
+            ## 🚀 What is NoteCraft AI?
+
+NoteCraft AI is a smart study assistant that helps you learn faster and better 📚  
+It converts your study material into simple notes and summaries in seconds ⚡
+
+${username 
+  ? `Hey, ${username} 👋` 
+  : `Please login first to unlock all features 😊  
+👉 [Login](/login)`
+}
+
+---
+
+## ✨ What can you do here?
+
+- 📄 Generate notes from your PDF  
+- 🧠 Understand complex topics in simple language  
+- ⚡ Get quick summaries of long content  
+- 📋 Copy notes easily for your use  
+
+---
+
+## 🎯 Get Started
+
+- Want notes from your PDF?  
+👉 [Generate Notes](/create)
+
+- Want to ask questions or learn?  
+👉 [Chat with AI](/chatwithai)
+
+${username ? `- Open your dashboard  
+👉 [Dashboard](/dashboard)` : ""}
+                    `
+                },
+                {
+                    role: 'user',
+                    content: text
+                }
+            ],
+            model: 'openai/gpt-oss-120b'
+        })
+        
+        return aiResponse?.choices[0]?.message?.content || ''
+    }
+    catch(err){
+        console.error(err)
+    }
+}
