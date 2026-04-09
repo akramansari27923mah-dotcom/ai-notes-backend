@@ -10,15 +10,17 @@ const app = express();
 //MIDDLEWARE
 
 const corsOptions = {
-     origin: [
-        'http://localhost:5173',
-        'https://ai-notes-frontend-x9sz.vercel.app'
-    ],
-    methodes: ['GET', 'POST', 'DELETE', 'OPTIONS'],
-     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
+  origin: [
+    'http://localhost:5173',
+    'https://ai-notes-frontend-x9sz.vercel.app'
+  ],
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'], // ✅ correct key
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }
+
 app.use(cors(corsOptions))
+app.options(/.*/, cors(corsOptions))
 app.use(express.json())
 app.use(cookieParser())
 
