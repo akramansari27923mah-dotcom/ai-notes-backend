@@ -12,7 +12,7 @@ const app = express();
 const corsOptions = {
   origin: [
     'http://localhost:5173',
-    'https://ai-notes-frontend-x9sz.vercel.app'
+    'https://notecraftai.vercel.app'
   ],
   methods: ['GET', 'POST', 'DELETE', 'OPTIONS'], 
   allowedHeaders: ["Content-Type", "Authorization"],
