@@ -121,6 +121,9 @@ ${text}
           model,
           messages,
         }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Timeout")), 20000),
+        ),
       ]);
     };
 
@@ -216,6 +219,9 @@ Q3. Question here?
           model,
           messages,
         }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Timeout")), 20000),
+        ),
       ]);
     };
 
@@ -294,6 +300,9 @@ ${prompt}
           model,
           messages,
         }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Timeout")), 20000),
+        ),
       ]);
     };
 
