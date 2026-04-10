@@ -1,20 +1,16 @@
 import Groq from "groq-sdk";
-import 'dotenv/config'
+import "dotenv/config";
 
 const groq = new Groq({
-    apiKey: process.env.GROQ_API_KEY,
+  apiKey: process.env.GROQ_API_KEY,
 });
 
-export const handleGroq = async (text = '', prompt = '', title = '') => {
-
-
-    try {
-        const aiResponse = await groq.chat.completions.create({
-            model: "openai/gpt-oss-120b",
-            messages: [
-                {
-                    role: "system",
-                    content: `
+export const handleGroq = async (text = "", prompt = "", title = "") => {
+  try {
+    const messages = [
+      {
+        role: "system",
+        content: `
                     You are a highly intelligent AI Study Assistant.
 
 Your role is to transform raw content (PDF text or user input) into clear, structured, and high-quality study notes.
@@ -82,11 +78,11 @@ If the user provides a specific question or instruction:
 - Professional but simple
 - Student-friendly tone
 - Clean, structured, and visually clear
-                    `
-                },
-                {
-                    role: "user",
-                    content: `
+                    `,
+      },
+      {
+        role: "user",
+        content: `
 Create clear, structured, and visually appealing notes in Markdown format.
 
 Follow these rules:
@@ -100,7 +96,7 @@ Follow these rules:
 - Avoid long paragraphs
 
 Structure:
-1. Title: ${title || ''}
+1. Title: ${title || ""}
 2. Introduction (2–3 lines)
 3. Key Concepts (with bullet points)
 4. Detailed Explanation (simple)
@@ -115,26 +111,45 @@ User Instruction:
 
 Content:
 ${text}
-`
-                }
-            ],
-        });
+`,
+      },
+    ];
 
-        return aiResponse.choices[0]?.message?.content || "";
+    const callAi = async (model) => {
+      return await Promise.race([
+        groq.chat.completions.create({
+          model,
+          messages,
+        }),
+      ]);
+    };
 
-    } catch (error) {
-        console.error("Groq Error:", error);
-        throw new Error("AI request failed");
+    try {
+      const res = await callAi("llama-3.3-70b-versatile");
+      return res.choices[0].message.content || "";
+    } catch (err) {
+      console.log("Primary model failed, Switching");
+
+      try {
+        const res = await callAi("llama-3.1-8b-instant");
+        return res.choices[0].message.content || "";
+      } catch (err) {
+        console.log("Fallback also failed", err);
+        return "AI is currently busy. Please try again later.";
+      }
     }
+  } catch (error) {
+    console.error("Groq Error:", error);
+    return "AI is busy, please try again.";
+  }
 };
 
-
 export const handelQuiz = async (text) => {
-    const aiResponse = await groq.chat.completions.create({
-        messages: [
-            {
-                role: 'system',
-                content: `
+  try {
+    const messages = [
+      {
+        role: "system",
+        content: `
                 You are an expert AI quiz generator.
 
 Your task is to carefully read the provided notes and convert them into a high-quality, user-friendly quiz (NOT JSON).
@@ -187,31 +202,52 @@ Q3. Question here?
 - If notes are short, still generate the best possible quiz
 - Never use placeholder or dummy content
 - Output must look like a real quiz ready for users
-                `
-            },
-            {
-                role: 'user',
-                content: text
-            }
-        ],
-        model: 'openai/gpt-oss-120b'
-    })
+                `,
+      },
+      {
+        role: "user",
+        content: text,
+      },
+    ];
 
+    const callAi = async (model) => {
+      return await Promise.race([
+        groq.chat.completions.create({
+          model,
+          messages,
+        }),
+      ]);
+    };
 
-    return aiResponse.choices[0].message.content || ''
-}
+    try {
+      const res = await callAi("llama-3.3-70b-versatile");
+      return res?.choices[0]?.message?.content || "";
+    } catch (err) {
+      console.log("Primary model failed, Switching");
+      try {
+        const res = await callAi("llama-3.1-8b-instant");
+        return res?.choices[0]?.message?.content || "";
+      } catch (err) {
+        console.log("Fallback also failed", err);
+        return "AI is currently busy. Please try again later.";
+      }
+    }
+  } catch (err) {
+    console.log("Primary model failed, Switching");
+    return "Groq Api Failed";
+  }
+};
 
 export const handelChat = async (text, prompt) => {
-
-    const aiResponse = await groq.chat.completions.create({
-        messages: [
-            {
-                role: 'assistant',
-                content: 'you are ai assistent who talk about on the basis of notes'
-            },
-            {
-                role: 'user',
-                content: `
+  try {
+    const messages = [
+      {
+        role: "assistant",
+        content: "you are ai assistent who talk about on the basis of notes",
+      },
+      {
+        role: "user",
+        content: `
 You are a helpful and accurate AI tutor. Your job is to answer the question strictly using the provided notes only.
 
 Rules:
@@ -248,42 +284,60 @@ ${text}
 
 Question:
 ${prompt}
-`
-            },
-        ],
-        model: 'openai/gpt-oss-120b'
-    })
+`,
+      },
+    ];
 
-    const res = aiResponse?.choices[0]?.message?.content || 'Ai response failed'
+    const callAi = async (model) => {
+      return await Promise.race([
+        groq.chat.completions.create({
+          model,
+          messages,
+        }),
+      ]);
+    };
 
-    return res
+    try {
+      const res = await callAi("llama-3.3-70b-versatile");
+      return res?.choices[0]?.message?.content || "";
+    } catch (err) {
+      console.log("Primary model failed, Switching");
+      try {
+        const res = await callAi("llama-3.1-8b-instant");
+        return res?.choices[0]?.message?.content || "";
+      } catch (err) {
+        console.log("Fallback also failed", err);
+        return "AI is currently busy. Please try again later.";
+      }
+    }
+  } catch (err) {
+    console.log("Grow Error: ", err);
+    return "Groq Api failed";
+  }
+};
 
-}
+export const handelChatSupport = async (text, historys, username) => {
+  const history = historys.slice(-20);
 
-export const handelChatSupport = async(text, historys, username) => {
-    
-    const history = historys.slice(-20)
-
-    try{
-
-        const aiResponse = await groq.chat.completions.create({
-            messages: [
-                {
-                    role: 'assistant',
-                    content: 'You are a helpfull ai for NoteCraft plateform'
-                },
-                ...history,
-                {
-                    role: 'system',
-                    content: `
+  try {
+    const messages = [
+      {
+        role: "assistant",
+        content: "You are a helpfull ai for NoteCraft plateform",
+      },
+      ...history,
+      {
+        role: "system",
+        content: `
             ##  What is NoteCraft AI?
 
 NoteCraft AI is a smart study assistant that helps you learn faster and better 📚  
 It converts your study material into simple notes and summaries in seconds ⚡
 
-${username 
-  ? `Hey, ${username} 👋` 
-  : `Please login first to unlock all features 😊  
+${
+  username
+    ? `Hey, ${username} 👋`
+    : `Please login first to unlock all features 😊  
 👉 [Login](/login)`
 }
 
@@ -315,21 +369,48 @@ Links:
 - Want to ask questions or learn?  
 👉 [Chat with AI](/chatwithai)
 
-${username ? `- Open your dashboard  
-👉 [Dashboard](/dashboard)` : ""}
-                    `
-                },
-                {
-                    role: 'user',
-                    content: text
-                }
-            ],
-            model: 'openai/gpt-oss-120b'
-        })
-        
-        return aiResponse?.choices[0]?.message?.content || ''
-    }
-    catch(err){
-        console.error(err)
-    }
+${
+  username
+    ? `- Open your dashboard  
+👉 [Dashboard](/dashboard)`
+    : ""
 }
+                    `,
+      },
+      {
+        role: "user",
+        content: text,
+      },
+    ];
+
+    const callAi = async (model) => {
+      return await Promise.race([
+        groq.chat.completions.create({
+          model,
+          messages,
+        }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Timeout")), 20000),
+        ),
+      ]);
+    };
+
+    try {
+      const res = await callAi("llama-3.3-70b-versatile");
+      return res?.choices[0]?.message?.content || "";
+    } catch (err) {
+      console.log("Primary model failed, Switching");
+
+      try {
+        const res = await callAi("llama-3.1-8b-instant");
+        return res?.choices[0]?.message?.content || "";
+      } catch (err) {
+        console.log("Fallback is also failed", err);
+        return "AI is currently busy. Please try again later.";
+      }
+    }
+  } catch (err) {
+    console.error(err);
+    return "Groq Api Failed";
+  }
+};
