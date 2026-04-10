@@ -12,13 +12,14 @@ router.post(
   uplode.single("file"),
   noteController.generateNotes,
 );
-router.get("/history", protectAuth, noteController.getNotes);
+
 router.post(
   "/chat",
   protectAuth,
   uplode.single("file"),
   chatController.chatWithNote,
 );
+router.get("/history", protectAuth, noteController.getNotes);
 router.post("/Chatsupport", chatSupportController.chatSupport);
 
 export default router;

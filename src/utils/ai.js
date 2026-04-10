@@ -10,7 +10,7 @@ export const handleGroq = async (text = '', prompt = '', title = '') => {
 
     try {
         const aiResponse = await groq.chat.completions.create({
-            model: "moonshotai/kimi-k2-instruct",
+            model: "openai/gpt-oss-120b",
             messages: [
                 {
                     role: "system",
@@ -194,7 +194,7 @@ Q3. Question here?
                 content: text
             }
         ],
-        model: 'moonshotai/kimi-k2-instruct'
+        model: 'openai/gpt-oss-120b'
     })
 
 
@@ -270,13 +270,13 @@ export const handelChatSupport = async(text, historys, username) => {
             messages: [
                 {
                     role: 'assistant',
-                    content: 'You are a helpfull ai for my plateform'
+                    content: 'You are a helpfull ai for NoteCraft plateform'
                 },
                 ...history,
                 {
                     role: 'system',
                     content: `
-            ## 🚀 What is NoteCraft AI?
+            ##  What is NoteCraft AI?
 
 NoteCraft AI is a smart study assistant that helps you learn faster and better 📚  
 It converts your study material into simple notes and summaries in seconds ⚡
@@ -289,12 +289,21 @@ ${username
 
 ---
 
+IMPORTANT:
+Only use the exact links provided below. Do not change or create new links.
+
+Links:
+- Login → /login
+- Generate Notes → /create
+- Chat with AI → /chatwithai
+- Dashboard → /dashboard
+
 ## ✨ What can you do here?
 
-- 📄 Generate notes from your PDF  
-- 🧠 Understand complex topics in simple language  
-- ⚡ Get quick summaries of long content  
-- 📋 Copy notes easily for your use  
+-  Generate notes from your PDF  
+-  Understand complex topics in simple language  
+-  Get quick summaries of long content  
+-  Copy notes easily for your use  
 
 ---
 
