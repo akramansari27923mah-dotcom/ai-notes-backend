@@ -39,7 +39,7 @@ const chatWithNote = async (req, res) => {
     }
     catch (err) {
         console.error(err)
-        res.status(500).json({
+       return res.status(500).json({
             success: false,
             message: 'Internal server error'
         })

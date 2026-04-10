@@ -4,7 +4,7 @@ const chatSupport = async (req, res) => {
   const { prompt, history, username } = req?.body;
   
   if (!prompt) {
-    res.status(401).json({
+   return res.status(401).json({
       success: false,
       message: "Prompt is required",
     });
