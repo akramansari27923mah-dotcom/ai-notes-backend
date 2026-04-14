@@ -14,7 +14,7 @@ const corsOptions = {
     'http://localhost:5173',
     'https://notecraftai.vercel.app'
   ],
-  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'], 
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS', 'PATCH'], 
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }

@@ -5,7 +5,7 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-export const handleGroq = async (text = "", prompt = "", title = "") => {
+export const handleGroq = async (text = "", prompt = "", title = "") => {``
   try {
     const messages = [
       {
@@ -355,11 +355,18 @@ ${
 IMPORTANT:
 Only use the exact links provided below. Do not change or create new links.
 
+
+If a user asks to change their password:
+* Reply with: [Change Password](/change-password)
+* Also say: “You must be logged in to change your password.”
+* Keep the response short and simple.
+
+
 Links:
-- Login → /login
-- Generate Notes → /create
-- Chat with AI → /chatwithai
-- Dashboard → /dashboard
+- Login → [Login](/login)
+- Generate Notes → [Create](/create)
+- Chat with AI → [Ai Tutor](/aitutor)
+- Dashboard → [Dashboard](/dashboard)
 
 ## ✨ What can you do here?
 
@@ -376,7 +383,7 @@ Links:
 👉 [Generate Notes](/create)
 
 - Want to ask questions or learn?  
-👉 [Chat with AI](/chatwithai)
+👉 [Chat with AI](/aitutor)
 
 ${
   username
